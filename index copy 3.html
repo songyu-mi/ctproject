@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>타이틀: 올바른 카드 배열 찾기</title>
+  <style>
+    body { font-family: 'Arial'; padding: 20px; line-height: 1.6; }
+    .box { border: 1px solid #aaa; padding: 15px; margin: 10px 0; background-color: #f9f9f9; }
+    .title { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+    .subtitle { font-size: 18px; margin-bottom: 20px; }
+    .choices button { display: block; margin: 5px 0; padding: 10px; font-size: 16px; width: 100%; }
+    #timer { font-weight: bold; font-size: 20px; margin: 10px 0; color: #c00; }
+    .popup { display: none; position: fixed; top: 30%; left: 35%; width: 30%; background: white; border: 2px solid #333; padding: 20px; text-align: center; z-index: 9999; }
+    .popup button { padding: 8px 16px; font-size: 16px; margin-top: 15px; }
+  </style>
+</head>
+<body>
+
+  <div class="title">타이틀: 올바른 카드 배열 찾기</div>
+  <div class="subtitle">대상 및 교과: 중학생(국어 교과)</div>
+
+  <div class="box">
+    <strong>지문:</strong><br>
+    비버는 문장을 <strong>말의 가장 작은 단위(형태소)</strong>로 나눈 후, 각 단위의 역할에 따라 두 가지 색깔 카드로 구분하는 프로그램을 만들었습니다.
+  </div>
+
+  <div class="box">
+    <strong>기준:</strong><br>
+    🔵 파란 카드: 구체적인 대상, 동작, 상태 등 의미를 가진 말의 가장 작은 단위<br>
+    🔴 빨간 카드: 말과 말 사이의 관계를 표시하거나 문장의 문법적 기능을 수행하는 말의 가장 작은 단위
+  </div>
+
+  <div class="box">
+    <strong>제시 문장:</strong><br>
+    “비가 많이 내린다.”
+  </div>
+
+  <div class="box">
+    <strong>문제:</strong><br>
+    다음 중 비버의 기준에 따라 제시 문장을 분석하고, 카드를 올바르게 배열한 것은 무엇인가요?
+  </div>
+
+  <div>
+    <label for="time-select">시간 설정: </label>
+    <select id="time-select">
+      <option value="30">30초</option>
+      <option value="60">1분</option>
+      <option value="90">1분 30초</option>
+      <option value="120">2분</option>
+    </select>
+    <button onclick="startQuiz()">문제 풀기</button>
+    <div id="timer"></div>
+  </div>
+
+  <div class="choices" id="quiz-area" style="display:none;">
+    <button onclick="checkAnswer(1)">1. 🔵 🔴 🔴 🔵 🔵 🔴</button>
+    <button onclick="checkAnswer(2)">2. 🔵 🔴 🔵 🔵 🔵 🔴</button>
+    <button onclick="checkAnswer(3)">3. 🔵 🔴 🔵 🔴 🔵 🔴</button>
+    <button onclick="checkAnswer(4)">4. 🔵 🔴 🔵 🔵 🔴 🔴</button>
+    <button onclick="checkAnswer(5)">5. 🔵 🔴 🔵 🔴 🔴 🔴</button>
+  </div>
+
+  <div id="timeout-popup" class="popup">
+    <div><strong>⏰ 시간이 종료되었습니다!</strong></div>
+    <button onclick="retryQuiz()">다시 도전</button>
+  </div>
+
+  <div id="correct-popup" class="popup">
+    <div><strong>🎉 정답입니다!</strong></div>
+    <button onclick="endActivity()">활동 종료</button>
+  </div>
+
+  <div id="incorrect-popup" class="popup">
+    <div><strong>❗ 다시 풀어보세요.</strong></div>
+    <button onclick="closePopup('incorrect-popup')">확인</button>
+  </div>
+
+  <script>
+    let timerInterval;
+    let correctAnswer = 3;
+
+    function startQuiz() {
+      const timeLimit = parseInt(document.getElementById("time-select").value);
+      let timeLeft = timeLimit;
+      document.getElementById("quiz-area").style.display = "block";
+      document.getElementById("timer").textContent = `남은 시간: ${timeLeft}초`;
+      clearInterval(timerInterval);
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").textContent = `남은 시간: ${timeLeft}초`;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById("timer").textContent = "";
+          document.getElementById("timeout-popup").style.display = "block";
+        }
+      }, 1000);
+    }
+
+    function checkAnswer(selected) {
+      clearInterval(timerInterval);
+      if (selected === correctAnswer) {
+        document.getElementById("correct-popup").style.display = "block";
+      } else {
+        document.getElementById("incorrect-popup").style.display = "block";
+      }
+    }
+
+    function retryQuiz() {
+      document.getElementById("timeout-popup").style.display = "none";
+      document.getElementById("quiz-area").style.display = "none";
+      document.getElementById("timer").textContent = "";
+    }
+
+    function closePopup(id) {
+      document.getElementById(id).style.display = "none";
+    }
+
+    function endActivity() {
+      alert("수고하셨습니다! 활동이 종료됩니다.");
+      location.reload();
+    }
+  </script>
+
+</body>
+</html>
