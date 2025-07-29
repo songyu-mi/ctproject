@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>비버의 음운 결합 실험실</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; background-color: #f7f7f7; padding: 30px; }
+        .container { max-width: 800px; margin: auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h1, h2 { color: #2c3e50; }
+        .section { margin-bottom: 25px; }
+        .box { background-color: #ecf0f1; padding: 15px; border-radius: 5px; }
+        .cards { display: flex; gap: 10px; flex-wrap: wrap; }
+        .card { background-color: #3498db; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; user-select: none; transition: 0.2s; }
+        .card:hover { background-color: #2980b9; }
+        #timer { font-size: 18px; margin-top: 10px; color: #e74c3c; }
+        select, button { padding: 5px 10px; font-size: 16px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>타이틀: 비버의 음운 결합 실험실</h1>
+        <h2>대상 및 교과: 중학교(국어)</h2>
+
+        <div class="section">
+            <strong>지문:</strong>
+            <div class="box">
+                비버는 자음과 모음을 결합하여 의미 있는 2음절 단어를 만드는 암호 알고리즘을 개발하고 있습니다. 이 알고리즘은 다음 조건을 충족하는 모든 가능한 단어 조합을 찾아야 합니다.
+            </div>
+        </div>
+
+        <div class="section">
+            <strong>조건:</strong>
+            <div class="box">
+                1) 단어는 2음절로 구성되어야 한다.<br>
+                2) 종성은 있어도 되고, 없어도 된다.<br>
+                3) 제시 음운은 2회 이상 사용되어도 된다.<br>
+                4) 단어는 실제 국어 어휘여야 한다.<br>
+                5) 주의: 단어에 사용된 모든 자음과 모음은 실제 발음되는 음가를 가져야 한다.
+            </div>
+        </div>
+
+        <div class="section">
+            <strong>제시 음운:</strong>
+            <div class="box">ㄷ, ㄹ, ㅁ, ㅅ, ㅇ, ㅏ, ㅓ</div>
+        </div>
+
+        <div class="section">
+            <strong>문제:</strong>
+            <div class="box">
+                위의 음운을 활용해 만들 수 있는 2음절 단어에 해당하는 것을 보기에서 모두 고르세요.
+            </div>
+        </div>
+
+        <div class="section">
+            <strong>시간 설정:</strong>
+            <select id="timeSelect">
+                <option value="30">30초</option>
+                <option value="60">1분</option>
+                <option value="90">1분 30초</option>
+                <option value="120">2분</option>
+            </select>
+            <button onclick="startTimer()">문제 풀기</button>
+            <div id="timer"></div>
+        </div>
+
+        <div class="section">
+            <strong>보기:</strong>
+            <div class="cards">
+                <div class="card" onclick="checkAnswer(this, true)">사랑</div>
+                <div class="card" onclick="checkAnswer(this, true)">상상</div>
+                <div class="card" onclick="checkAnswer(this, false)">알다</div>
+                <div class="card" onclick="checkAnswer(this, false)">삶다</div>
+                <div class="card" onclick="checkAnswer(this, true)">살다</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let correctCount = 0;
+        let totalCorrect = 3;
+        let timerInterval;
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            let timeLeft = parseInt(document.getElementById('timeSelect').value);
+            const timerDisplay = document.getElementById("timer");
+            timerDisplay.textContent = `남은 시간: ${timeLeft}초`;
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("시간이 종료되었습니다.");
+                } else {
+                    timerDisplay.textContent = `남은 시간: ${timeLeft}초`;
+                }
+            }, 1000);
+        }
+
+        function checkAnswer(element, isCorrect) {
+            if (isCorrect) {
+                if (!element.classList.contains("clicked")) {
+                    element.classList.add("clicked");
+                    element.style.backgroundColor = "#2ecc71";
+                    alert("정답입니다.");
+                    correctCount++;
+                    if (correctCount === totalCorrect) {
+                        alert("모든 정답을 찾았습니다. 🎉\\n[다른 문제 도전하기]");
+                    }
+                }
+            } else {
+                alert("다시 풀어보세요.");
+            }
+        }
+    </script>
+</body>
+</html>
