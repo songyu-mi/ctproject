@@ -30,7 +30,7 @@ with col1:
 
     with st.expander('image content...'):
         imgfilepath = './images/gpt.jpg'
-        st.image(imgfilepath)
+        st.image(imgfilepath, width=600)
 
     with st.expander('Content #2...'):
         with open('index copy 3.html', 'r', encoding='utf-8') as f:
