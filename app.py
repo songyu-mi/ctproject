@@ -41,6 +41,11 @@ with col1:
         with open('index copy 4.html', 'r', encoding='utf-8') as f:
             other_html = f.read()
         htmlviewer.html(other_html, height=1000)
+    
+    with st.expander('Content #4...'):
+        with open('index copy 6.html', 'r', encoding='utf-8') as f:
+            other_html = f.read()
+        htmlviewer.html(other_html, height=1000)
 
 
 with col2:

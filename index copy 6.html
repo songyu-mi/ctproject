@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>(AI 적용 CT문제) 문장을 형태소로 분석하기</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 30px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h1, h2 { color: #2c3e50; text-align: center; }
+        .box { background: #ecf0f1; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .sentence-box { text-align: center; font-size: 24px; font-weight: bold; margin: 20px 0; }
+        .cards { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; justify-content: center; }
+        .card { padding: 10px 20px; border-radius: 8px; cursor: pointer; color: white; font-weight: bold; }
+        .blue { background-color: #3498db; }
+        .red { background-color: #e74c3c; }
+        .stop { background-color: gold; color: black; }
+        .clear { background-color: #95a5a6; color: white; }
+        #timer { color: #e74c3c; font-size: 18px; margin-top: 10px; text-align: center; }
+        select, button { padding: 5px 10px; font-size: 16px; margin-top: 10px; }
+        .next-button { display: none; background-color: #2ecc71; color: white; margin-top: 20px; padding: 10px 20px; border-radius: 5px; cursor: pointer; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>타이틀: (AI 적용 CT문제) 문장을 형태소로 분석하기</h1>
+        <h2>대상 및 교과: 중학교(국어)</h2>
+
+        <div class="box">
+            <strong>지문:</strong><br>
+            비버는 문장을 말의 가장 작은 단위(형태소)로 나눈 후, 각 단위의 역할에 따라 두 가지 색깔 카드로 구분하는 프로그램을 만들었습니다.<br><br>
+            🔵 파란 카드: 구체적인 대상, 동작, 상태 등 의미를 가진 말의 가장 작은 단위<br>
+            🔴 빨간 카드: 말과 말 사이의 관계를 표시하거나 문장의 문법적 기능을 수행하는 말의 가장 작은 단위
+        </div>
+
+        <div class="box">
+            <strong>문제:</strong><br>
+            위의 기준에 따라 문장을 형태소로 분석하고, 그 기능에 따라 색깔 카드를 올바르게 배열하시오.
+        </div>
+
+        <div class="sentence-box">
+            <span id="sentence"></span>
+        </div>
+
+        <div class="section" style="text-align:center;">
+            <strong>시간 설정:</strong>
+            <select id="timeSelect">
+                <option value="30">30초</option>
+                <option value="60">1분</option>
+                <option value="90">1분 30초</option>
+                <option value="120">2분</option>
+            </select>
+            <button onclick="startTimer()">문제 풀기</button>
+            <div id="timer"></div>
+        </div>
+
+        <div class="cards">
+            <div class="card blue" onclick="selectCard('🔵')">🔵 파란 카드</div>
+            <div class="card red" onclick="selectCard('🔴')">🔴 빨간 카드</div>
+            <div class="card stop" onclick="stopSelection()">🛑 스톱</div>
+            <div class="card clear" onclick="clearSelection()">❌ 선택 취소</div>
+        </div>
+
+        <div class="box">
+            <strong>선택한 카드:</strong> <span id="selectedCards"></span>
+        </div>
+
+        <div id="nextBtn" class="next-button" onclick="nextQuestion()">다음 문제로 넘어가기 ▶</div>
+    </div>
+
+    <script>
+        const sentences = [
+            "비가 많이 내린다.",
+            "학생이 책을 읽었다.",
+            "고양이가 방에서 잔다.",
+            "나는 학교에 간다.",
+            "봄바람이 부드럽게 분다."
+        ];
+
+        // 모든 문장의 정답 동일
+        const correctPattern = ["🔵","🔴","🔵","🔴","🔵","🔴"];
+        const correctAnswers = {};
+        sentences.forEach(s => correctAnswers[s] = correctPattern);
+
+        let selectedSentence = "";
+        let selectedCards = [];
+        let timerInterval;
+        let wrongAttempts = 0;
+
+        function loadRandomSentence() {
+            selectedSentence = sentences[Math.floor(Math.random() * sentences.length)];
+            document.getElementById("sentence").innerText = selectedSentence;
+            wrongAttempts = 0;
+        }
+
+        function startTimer() {
+            loadRandomSentence();
+            selectedCards = [];
+            document.getElementById("selectedCards").innerText = "";
+            document.getElementById("nextBtn").style.display = "none";
+            clearInterval(timerInterval);
+            let timeLeft = parseInt(document.getElementById('timeSelect').value);
+            const timerDisplay = document.getElementById("timer");
+            timerDisplay.textContent = `남은 시간: ${timeLeft}초`;
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("시간이 종료되었습니다.");
+                } else {
+                    timerDisplay.textContent = `남은 시간: ${timeLeft}초`;
+                }
+            }, 1000);
+        }
+
+        function selectCard(card) {
+            selectedCards.push(card);
+            document.getElementById("selectedCards").innerText = selectedCards.join(" ");
+        }
+
+        function clearSelection() {
+            selectedCards.pop();
+            document.getElementById("selectedCards").innerText = selectedCards.join(" ");
+        }
+
+        function stopSelection() {
+            const correct = correctAnswers[selectedSentence] || [];
+            if (JSON.stringify(selectedCards) === JSON.stringify(correct)) {
+                alert("정답입니다. 🎉");
+                document.getElementById("nextBtn").style.display = "block";
+            } else {
+                wrongAttempts++;
+                if (wrongAttempts >= 2) {
+                    alert("오답입니다. 정답은: " + correct.join(" ") + "\n다음 문제로 넘어가세요.");
+                    document.getElementById("nextBtn").style.display = "block";
+                } else {
+                    alert("오답입니다. 다시 시도해보세요.");
+                }
+            }
+        }
+
+        function nextQuestion() {
+            loadRandomSentence();
+            selectedCards = [];
+            document.getElementById("selectedCards").innerText = "";
+            document.getElementById("nextBtn").style.display = "none";
+        }
+    </script>
+</body>
+</html>
