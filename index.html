@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>정원 물주기 장치</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+    h1, h2 { color: #333; }
+    .box { border: 2px solid #333; background: #fff; padding: 15px; margin: 10px 0; }
+    .controls { margin-top: 20px; }
+    .timer { font-size: 18px; color: red; margin-top: 10px; }
+    .question-area { display: none; }
+    .popup {
+      display: none;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      padding: 20px;
+      background: white;
+      border: 2px solid black;
+      box-shadow: 0 0 10px gray;
+    }
+    .popup button { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>정원 물주기 장치</h1>
+  <h2>대상 및 교과: 중학교 (국어)</h2>
+
+  <div class="box">
+    <strong>지문:</strong><br>
+    비버는 식물을 키우기 위해 자동 물주기 장치를 만들었습니다. 이 장치는 다음 프로그램에 따라 작동합니다.
+  </div>
+
+  <div class="box">
+    <strong>규칙:</strong>
+    <ol>
+      <li>1일차에는 물을 주고 시작함</li>
+      <li>비가 오는 날에는 작동하지 않음</li>
+      <li>3일 연속 물을 주지 않으면 다음 날은 무조건 작동함</li>
+      <li>한 번 작동하면 다음 날은 반드시 쉬어야 함</li>
+    </ol>
+  </div>
+
+  <div class="box">
+    <strong>문제:</strong><br>
+    비버가 총 10일간 정원을 관리하는 동안 비가 총 3번(2일 차, 5일 차, 9일 차) 왔다면, 물은 최소 몇 번 주었을까요?
+  </div>
+
+  <div class="controls">
+    <label>시간 설정: 
+      <select id="time">
+        <option value="30">30초</option>
+        <option value="60">1분</option>
+        <option value="90">1분 30초</option>
+        <option value="120">2분</option>
+      </select>
+    </label>
+    <button onclick="startProblem()">문제 풀기</button>
+  </div>
+
+  <div class="question-area" id="question-area">
+    <p>정답 입력: <input type="number" id="answer" min="0"> <button onclick="submitAnswer()">제출</button></p>
+    <div class="timer" id="timer"></div>
+  </div>
+
+  <div class="popup" id="popup">
+    <strong>시간이 종료되었습니다!</strong><br>
+    <button onclick="retry()">다시 도전</button>
+  </div>
+
+  <script>
+    let timerInterval;
+    let timeLeft;
+
+    function startProblem() {
+      const time = parseInt(document.getElementById("time").value);
+      document.getElementById("question-area").style.display = 'block';
+      document.getElementById("popup").style.display = 'none';
+      document.getElementById("answer").value = "";
+      startTimer(time);
+    }
+
+    function startTimer(seconds) {
+      clearInterval(timerInterval);
+      timeLeft = seconds;
+      document.getElementById("timer").innerText = `남은 시간: ${timeLeft}초`;
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").innerText = `남은 시간: ${timeLeft}초`;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById("popup").style.display = 'block';
+        }
+      }, 1000);
+    }
+
+    function submitAnswer() {
+      const userAnswer = document.getElementById("answer").value;
+      if (userAnswer === "") return;
+      clearInterval(timerInterval);
+      alert("당신의 답: " + userAnswer + "\n정답과 비교해보세요!");
+    }
+
+    function retry() {
+      document.getElementById("popup").style.display = 'none';
+      document.getElementById("question-area").style.display = 'none';
+      document.getElementById("answer").value = "";
+    }
+  </script>
+</body>
+</html>
